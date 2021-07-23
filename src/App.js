@@ -1,4 +1,5 @@
-import React, {useState, useEffect, useRef} from 'react';
+import { render } from '@testing-library/react';
+import React, {useState, useEffect, useRef, useReducer} from 'react';
 
 const App = props => {
     const [n, setN] = useState(0);
@@ -112,6 +113,45 @@ function ChildB() {
         </div>
     )
 }
+
+
+// useReducer 就相当于一个useState，但是这个useReducer把对数据的操作都封装进入了一个函数
+// 1. 创建初始值
+const initial = {
+    n: 0
+}
+
+// 2. 创建所有操作reducer(state, action)
+const reducer = (state, action) => {
+    if(action.type === 'add') {
+        return { 0 : state.n +1 }
+    } else if(action.type === 'mult') {
+        return { 0 : state.n * 2 }
+    } else {
+        throw new Error('unknown type')
+    }
+}
+
+// 3. 创建useReducer，得到读写api
+// useReducer( 操作函数， 变量)  注意顺序
+function useReducerDemo() {
+    // state是数据， dispatch是写数据的方法
+    const [state, dispatch] = useReducer(reducer, initial);
+    const [n] = state.n;
+
+    // 4. 调用写({type: '操作类型'})
+    const onClick = () => {
+        dispatch({ type: 'add' })
+    };
+    return (
+        <div>
+            <h1>n: {n}</h1>
+
+            <button onClick={ onClick }> +1 </button>
+        </div>
+    )
+}
+
 
 
 export default App
